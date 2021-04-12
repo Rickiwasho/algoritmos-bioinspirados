@@ -1,0 +1,10 @@
+A partir del código de ejemplo entregado, la gran diferencia es que no
+tenemos un gráfico de los valores ya evaluados (como la imagen lunar).
+
+Me parece que lo más adecuado es no tratar de obtener un gráfico de todos
+los valores a priori, si no simplemente ir graficando sobre la marcha los
+valores que las partículas van encontrando, ya que en un escenario
+realista no sería factible evaluar todos los valores, y en este caso tal
+vez tampoco lo sea, dada la complejidad de la función.
+
+
