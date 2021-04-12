@@ -7,7 +7,19 @@ class Particle{
 	float vx, vy; //velocidad
 
 	Particle(){
+		x = random(width);
+		y = random(height);
 
+		mybest_x = x; 
+		mybest_y = y;
+		mybest_fit = evaluate(x, y);
+
+		vx = random(-1,1);
+		vy = random(-1,1);
 	}
 
+}
+
+float evaluate(float x, float y){
+	return 0;
 }
