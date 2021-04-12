@@ -23,15 +23,16 @@ class Particle{
 
 // funcion rastrigin
 float evaluate(float x, float y){
-	n = 2 // dimensiones
-	sum = 0;
+	int n = 2; // dimensiones
+	float sum = 0;
 
 	// sumatoria
 	for (int i=1; i<=n; i++){ 
 		sum += x*x - 10*cos(2*PI*x);
 	}
 
-	result = 10*n + sum;
+	float result = 10*n + sum;
 
 	return result;
 }
+
