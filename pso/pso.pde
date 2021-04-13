@@ -1,3 +1,9 @@
+// --- Variables globales ----------
+
+int n_particulas = 100; //número de partículas
+Particle[] particles; //arreglo de particulas
+
+// --------------------------------
 
 class Particle{
 	float x, y, fit; // current position(x-vector)  and fitness (x-fitness)
@@ -15,8 +21,16 @@ class Particle{
 		vx = random(-1,1);
 		vy = random(-1,1);
 	}
+
+	void display(){
+		fill(30, 50);
+		stroke(30, 100);
+		int radius = 6;
+		ellipse(x-radius/2, y-radius/2, radius, radius);
+	}
 }
 
+// ------------------------------
 
 // funcion Rastrigin
 float evaluate(float x, float y){
@@ -34,9 +48,17 @@ float evaluate(float x, float y){
 }
 
 void draw(){
-	ellipse(50, 50, 100, 100);
+	background(255);
+	for (int i = 0; i < n_particulas; i++){
+		particles[i].display();
+	}
 }
 
 void setup(){
-	size(1200, 900);
+	size(900, 900);
+
+	particles = new Particle[n_particulas];
+	for (int i = 0; i < n_particulas; i++){
+		particles[i] = new Particle();
+	}
 }
