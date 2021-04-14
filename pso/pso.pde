@@ -10,37 +10,38 @@ float C1 = 30, C2 =  10; // learning factors (C1: own, C2: social) (ok)
 // --------------------------------
 
 class Particle{
-	float x, y, fit; // current position(x-vector)  and fitness (x-fitness)
-	float mybest_x, mybest_y, mybest_fit; // mejor valor alcanzado por esta particula
-	float vx, vy; //velocidad
+  float x, y, fit; // current position(x-vector)  and fitness (x-fitness)
+  float mybest_x, mybest_y, mybest_fit; // mejor valor alcanzado por esta particula
+  float vx, vy; //velocidad
 
-	Particle(){
-		x = random(width);
-		y = random(height);
+  Particle(){
+    x = random(width);
+    y = random(height);
 
-		mybest_x = x; 
-		mybest_y = y;
-		mybest_fit = evaluate(x, y);
+    mybest_x = x; 
+    mybest_y = y;
+    mybest_fit = evaluate(x, y);
 
-		vx = random(-1,1);
-		vy = random(-1,1);
-}
+    vx = random(-1,1);
+    vy = random(-1,1);
+  }
+
   float Eval (float x, float y){ //evaluar la funcion en el punto
-   evals++;
-   fit = evaluate(x,y);
-   if (fit < mybest_fit){ //actualiza el mejor alcanzado por particula
-     mybest_fit = fit;
-     mybest_x = x;
-     mybest_y  = y;
-   }
-   if (fit < gbest){ //actualiza mejor poscision global
-     gbest = fit;
-     gbest_x = x;
-     gbest_y = y;
-     evals_to_best = evals;
-   }
-   return fit; //retorna el fitness
-   }
+    evals++;
+    fit = evaluate(x,y);
+    if (fit < mybest_fit){ //actualiza el mejor alcanzado por particula
+      mybest_fit = fit;
+      mybest_x = x;
+      mybest_y  = y;
+    }
+    if (fit < gbest){ //actualiza mejor poscision global
+      gbest = fit;
+      gbest_x = x;
+      gbest_y = y;
+      evals_to_best = evals;
+    }
+    return fit; //retorna el fitness
+  }
   void display(){
     fill(30, 50);
     stroke(30, 100);
@@ -53,32 +54,32 @@ class Particle{
 // ------------------------------
 
 // funcion Rastrigin
-float evaluate(float x, float y){
-	int n = 2; // dimensiones
-	float sum = 0;
+float rastrigin(float x, float y){
+  int n = 2; // dimensiones
+  float sum = 0;
 
-	// sumatoria
-	for (int i=1; i<=n; i++){ 
-		sum += x*x - 10*cos(2*PI*x);
-	}
+  // sumatoria
+  for (int i=1; i<=n; i++){ 
+    sum += x*x - 10*cos(2*PI*x);
+  }
 
-	float result = 10*n + sum;
+  float result = 10*n + sum;
 
-	return result;
+  return result;
 }
 
 void draw(){
-	background(255);
-	for (int i = 0; i < n_particulas; i++){
-		particles[i].display();
-	}
+  background(255);
+  for (int i = 0; i < n_particulas; i++){
+    particles[i].display();
+  }
 }
 
 void setup(){
-	size(900, 900);
+  size(900, 900);
 
-	particles = new Particle[n_particulas];
-	for (int i = 0; i < n_particulas; i++){
-		particles[i] = new Particle();
-	}
+  particles = new Particle[n_particulas];
+  for (int i = 0; i < n_particulas; i++){
+    particles[i] = new Particle();
+  }
 }
