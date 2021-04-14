@@ -28,7 +28,7 @@ class Particle{
 
   float Eval (float x, float y){ //evaluar la funcion en el punto
     evals++;
-    fit = evaluate(x,y);
+    fit = rastrigin(x,y);
     if (fit < mybest_fit){ //actualiza el mejor alcanzado por particula
       mybest_fit = fit;
       mybest_x = x;
