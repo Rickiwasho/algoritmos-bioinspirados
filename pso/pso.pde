@@ -2,6 +2,10 @@
 
 int n_particulas = 100; //número de partículas
 Particle[] particles; //arreglo de particulas
+int evals = 0, evals_to_best = 0; //número de evaluaciones y evaluaciones necesitadas para encontrar un optimo
+float gbest_x, gbest_y, gbest; //mejor poscicion y fitness global
+float w = 1000; // inercia: baja (~50): explotación, alta (~5000): exploración (2000 ok)
+float C1 = 30, C2 =  10; // learning factors (C1: own, C2: social) (ok)
 
 // --------------------------------
 
@@ -20,15 +24,31 @@ class Particle{
 
 		vx = random(-1,1);
 		vy = random(-1,1);
-	}
-
-	void display(){
-		fill(30, 50);
-		stroke(30, 100);
-		int radius = 6;
-		ellipse(x-radius/2, y-radius/2, radius, radius);
-	}
 }
+  float Eval (float x, float y){ //evaluar la funcion en el punto
+   evals++;
+   fit = evaluate(x,y);
+   if (fit < mybest_fit){ //actualiza el mejor alcanzado por particula
+     mybest_fit = fit;
+     mybest_x = x;
+     mybest_y  = y;
+   }
+   if (fit < gbest){ //actualiza mejor poscision global
+     gbest = fit;
+     gbest_x = x;
+     gbest_y = y;
+     evals_to_best = evals;
+   }
+   return fit; //retorna el fitness
+   }
+  void display(){
+    fill(30, 50);
+    stroke(30, 100);
+    int radius = 6;
+    ellipse(x-radius/2, y-radius/2, radius, radius);
+  }
+}
+
 
 // ------------------------------
 
