@@ -20,7 +20,7 @@ class Particle{
 
     mybest_x = x; 
     mybest_y = y;
-    mybest_fit = evaluate(x, y);
+    mybest_fit = rastrigin(x, y);
 
     vx = random(-1,1);
     vy = random(-1,1);
