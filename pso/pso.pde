@@ -141,7 +141,13 @@ float rastrigin(float x, float y) {
 // Funciones de utilidad
 
 void display_best() {
-  
+  fill(40, 100, 200, 100);
+  ellipse(gbest_x-4, gbest_y-4, 8, 8);
+
+  PFont f = createFont("Ubuntu", 16, true);
+  textFont(f,18);
+  fill(30, 30, 30, 220);
+  text("Best fitness: "+str(gbest)+"\nEvals to best: "+str(evals_to_best)+"\nEvals: "+str(evals),10,20);
 }
 
 // convertir de espacio solucion a pixel correspondiente
