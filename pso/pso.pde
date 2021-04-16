@@ -50,14 +50,14 @@ class Particle{
   }
     void move(){
     //actualiza velocidad (fórmula con factores de aprendizaje C1 y C2)
-    vx = vx + random(0,1)*C1*(mybest_x - x) + random(0,1)*C2*(gbest_x - x);
-    vy = vy + random(0,1)*C1*(mybest_y - y) + random(0,1)*C2*(gbest_y - y);
+    //vx = vx + random(0,1)*C1*(mybest_x - x) + random(0,1)*C2*(gbest_x - x);
+    //vy = vy + random(0,1)*C1*(mybest_y - y) + random(0,1)*C2*(gbest_y - y);
     //actualiza velocidad (fórmula con inercia, p.250)
-    //vx = w * vx + random(0,1)*(mybest_x - x) + random(0,1)*(gbest_x - x);
-    //vy = w * vy + random(0,1)*(mybest_y - y) + random(0,1)*(gbest_y - y);
+    vx = w * vx + random(0,1)*(mybest_x - x) + random(0,1)*(gbest_x - x);
+    vy = w * vy + random(0,1)*(mybest_y - y) + random(0,1)*(gbest_y - y);
     //actualiza velocidad (fórmula mezclada)  
-    //vx = w * vx + random(0,1)*C1*(px - x) + random(0,1)*C2*(gbestx - x);
-    //vy = w * vy + random(0,1)*C1*(py - y) + random(0,1)*C2*(gbesty - y);
+    //vx = w * vx + random(0,1)*C1*(mybest_x - x) + random(0,1)*C2*(gbest_x - x);
+    //vy = w * vy + random(0,1)*C1*(mybest_y - y) + random(0,1)*C2*(gbest_y - y);
     // trunca velocidad a maxv
     float modu = sqrt(vx*vx + vy*vy);
     if (modu > maxv){
