@@ -1,12 +1,12 @@
 // --- Variables globales ----------
-
 int n_particulas = 100; //número de partículas
 Particle[] particles; //arreglo de particulas
 int evals = 0, evals_to_best = 0; //número de evaluaciones y evaluaciones necesitadas para encontrar un optimo
-float gbest, gbest_x, gbest_y; //mejor poscicion y fitness global
+float gbest_x, gbest_y; //mejor poscicion y fitness global
 float w = 1000; // inercia: baja (~50): explotación, alta (~5000): exploración (2000 ok)
 float C1 = 30, C2 =  10; // learning factors (C1: own, C2: social) (ok)
 float maxv = 3; // max velocidad (modulo)
+float gbest = 57.84945;
 
 // --------------------------------
 
@@ -16,20 +16,19 @@ class Particle{
   float vx, vy; //velocidad
 
   Particle(){
-    x = transform_x(random(width));  //hay que hacer mapeo
-    y = transform_y(random(height)); //de estas variables, lo ideal seria poner el 0,0 en el centro
+    x = random(width);  //hay que hacer mapeo
+    y = random(height); //de estas variables, lo ideal seria poner el 0,0 en el centro
 
-    mybest_x = x; 
-    mybest_y = y;
-    mybest_fit = rastrigin(x, y);
-
+    mybest_x = transform_x(x); 
+    mybest_y = transform_y(y);
+    mybest_fit = rastrigin(transform_x(x), transform_y(y));
     vx = random(-1,1);
     vy = random(-1,1);
   }
 
-  float Eval (){ //evaluar la funcion en el punto
+  void Eval (){ //evaluar la funcion en el punto
     evals++;
-    fit = rastrigin(x,y);
+    fit = rastrigin(transform_x(x),transform_y(y));
     if (fit < mybest_fit){ //actualiza el mejor alcanzado por particula
       mybest_fit = fit;
       mybest_x = x;
@@ -41,13 +40,13 @@ class Particle{
       gbest_y = y;
       evals_to_best = evals;
     }
-    return fit; //retorna el fitness
+    //return fit; //retorna el fitness
   }
   void display(){
     fill(30, 50);
     stroke(30, 100);
     int radius = 6;
-    ellipse(detransform_x(x)-radius/2, detransform_y(y)-radius/2, radius, radius);
+    ellipse(x-radius/2, y-radius/2, radius, radius);
   }
     void move(){
     //actualiza velocidad (fórmula con factores de aprendizaje C1 y C2)
@@ -73,10 +72,7 @@ class Particle{
     if (y > height || y < 0) vy = - vy;
   }
 }
-
-
 // ------------------------------
-
 // funcion Rastrigin
 float rastrigin(float x, float y){
   int n = 2; // dimensiones
@@ -88,7 +84,6 @@ float rastrigin(float x, float y){
   sum += x*x - 10*cos(2*PI*x);
   sum += y*y - 10*cos(2*PI*y);
   float result = 10*n + sum;
-
   return result;
 }
 
@@ -110,20 +105,19 @@ float transform_y(float y){
 
 void despliegaBest(){
   fill(#0000ff);
-  ellipse(detransform_x(gbest_x),detransform_y(gbest_y),15,15);
+  ellipse(gbest_x,gbest_y,15,15);
   PFont f = createFont("Arial",16,true);
   textFont(f,15);
   fill(#00ff00);
   text("Best fitness: "+str(gbest)+"\nEvals to best: "+str(evals_to_best)+"\nEvals: "+str(evals),10,20);
 }
-
 void setup(){
   size(1024, 1024);
   particles = new Particle[n_particulas];
   for (int i = 0; i < n_particulas; i++){
     particles[i] = new Particle();
   }
-  print(rastrigin(0,0)); // para comprobar si funciona bien la funcion
+  print(rastrigin(5.12,5.12)); // para comprobar si funciona bien la funcion
 }
 
 void draw(){
