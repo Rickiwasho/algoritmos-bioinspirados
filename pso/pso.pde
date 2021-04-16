@@ -9,6 +9,8 @@ float w = 0.9; // inercia
 // float C1 = 0.3, C2 = 0.3; // factores de aprendizaje. C1: propio; C2: social
 float maxv = 0.08; // max velocidad
 
+boolean display_convergence = false ; //true: mostrar grafico de convergencia, false: mostrar puntos
+
 // Clase Particle
 class Particle {
   float x, y, fit; //posicion actual y fitness
@@ -104,20 +106,25 @@ void setup() {
   }
 }
 void draw() {
-  background(255);
-  line(0, 512, 1024, 512);
-  line(512, 0, 512, 1024);
-
-  for (int i = 0; i < n_particulas; i++) {
-    particles[i].eval();
-    particles[i].move();
+  if (display_convergence){ //mostrar convergencia
+    draw_convergence();
   }
+  else { // mostrar puntos
+    background(255);
+    line(0, 512, 1024, 512);
+    line(512, 0, 512, 1024);
 
-  for (int i = 0; i < n_particulas; i++) {
-    particles[i].display();
+    for (int i = 0; i < n_particulas; i++) {
+      particles[i].eval();
+      particles[i].move();
+    }
+
+    for (int i = 0; i < n_particulas; i++) {
+      particles[i].display();
+    }
+
+    display_best();
   }
-
-  display_best();
 }
 
 
@@ -134,6 +141,7 @@ float rastrigin(float x, float y) {
 // Funciones de utilidad
 
 void display_best() {
+  
 }
 
 // convertir de espacio solucion a pixel correspondiente

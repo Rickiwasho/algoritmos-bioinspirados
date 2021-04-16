@@ -9,6 +9,10 @@ float gbest = 1000; // mejor fitness global
 // Clase Individual
 class Individual{
     float x, y, fit; //posicion actual y fitness
+    Individual(){
+      x = random(-5.12, 5.12);
+      y = random(-5.12, 5.12);
+    }
 }
 
 // Funciones mandatorias
