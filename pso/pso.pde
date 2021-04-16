@@ -144,10 +144,31 @@ int float2pix_y(float y) {
   return floor((-y + 5.12) * 100);
 }
 
-// de pixel a punto en espacio solucion
-float pix2float_x(int pixel) {
-  return -5.12 + ((float) pixel/100.0);
-}
-float pix2float_y(int pixel) {
-  return 5.12 - ((float) pixel/100.0);
+float prev = 100; // funcion auxiliar para draw_convergence
+//funcion para graficar convergencia
+void draw_convergence(){
+
+  for (int i = 0; i < n_particulas; i++) {
+    particles[i].eval();
+    particles[i].move();
+  }
+  
+  int gf_left = 100; //limite izquierdo del grafico
+  int gf_down = height-100; //limite inferior del grafico
+  int radius = 4; //radio del punto.
+  
+  line(gf_left, gf_down, width, gf_down); // linea abcisa
+  line(gf_left, gf_down, gf_left, 0); //linea ordenada
+  
+  strokeWeight(2);
+  
+  line(
+       (float)gf_left + (evals-100)/100,
+       (float)gf_down - prev*100,
+       (float)gf_left + evals/100,
+       (float)gf_down - gbest*100); 
+       
+  strokeWeight(1);
+  
+  prev = gbest;
 }
