@@ -1,136 +1,153 @@
-// --- Variables globales ----------
-int n_particulas = 100; //número de partículas
-Particle[] particles; //arreglo de particulas
-int evals = 0, evals_to_best = 0; //número de evaluaciones y evaluaciones necesitadas para encontrar un optimo
-float gbest_x, gbest_y; //mejor poscicion y fitness global
-float w = 1000; // inercia: baja (~50): explotación, alta (~5000): exploración (2000 ok)
-float C1 = 30, C2 =  10; // learning factors (C1: own, C2: social) (ok)
-float maxv = 3; // max velocidad (modulo)
-float gbest = 57.84945;
+// Variables globales
+int n_particulas = 100; // número de partículas
+Particle[] particles; // arreglo de partículas
+int evals = 0; // número de evaluaciones
+int evals_to_best = 0; // evaluaciones necesitadas para encontrar el optimo
+float gbest_x, gbest_y; // mejor poscicion global
+float gbest = 1000; // mejor fitness global
+float w = 0.9; // inercia
+// float C1 = 0.3, C2 = 0.3; // factores de aprendizaje. C1: propio; C2: social
+float maxv = 0.08; // max velocidad
 
-// --------------------------------
+// Clase Particle
+class Particle {
+  float x, y, fit; //posicion actual y fitness
+  float mybest_x, mybest_y; // mejor posicion alcanzada por esta particula
+  float mybest; // mejor fitness alcanzado por esta particula
+  float vx, vy; // velocidad
 
-class Particle{
-  float x, y, fit; // current position(x-vector)  and fitness (x-fitness)
-  float mybest_x, mybest_y, mybest_fit; // mejor valor alcanzado por esta particula
-  float vx, vy; //velocidad
+  // constructor
+  Particle() {
+    x = random(-5.12, 5.12); // pto aleatorio en espacio de soluciones
+    y = random(-5.12, 5.12);
 
-  Particle(){
-    x = random(width);  //hay que hacer mapeo
-    y = random(height); //de estas variables, lo ideal seria poner el 0,0 en el centro
-
-    mybest_x = transform_x(x); 
-    mybest_y = transform_y(y);
-    mybest_fit = rastrigin(transform_x(x), transform_y(y));
-    vx = random(-1,1);
-    vy = random(-1,1);
+    mybest_x = x;
+    mybest_y = y;
+    mybest = rastrigin(x, y);
+    float v0_modulo = random(maxv); // generar un modulo para v inicial
+    vx = v0_modulo - random(maxv); // una fraccion aleatoria del modulo
+    vy = v0_modulo - vx; // el resto del modulo
   }
 
-  void Eval (){ //evaluar la funcion en el punto
+  void eval() {
     evals++;
-    fit = rastrigin(transform_x(x),transform_y(y));
-    if (fit < mybest_fit){ //actualiza el mejor alcanzado por particula
-      mybest_fit = fit;
+    fit = rastrigin(x, y);
+    if (fit < mybest) { //actualiza el mejor alcanzado por particula
+      mybest = fit;
       mybest_x = x;
       mybest_y  = y;
     }
-    if (fit < gbest){ //actualiza mejor poscision global
+    if (fit < gbest) { //actualiza mejor pto global
       gbest = fit;
       gbest_x = x;
       gbest_y = y;
       evals_to_best = evals;
+      print("Bet fit:", gbest, "\n");
     }
-    //return fit; //retorna el fitness
   }
-  void display(){
-    fill(30, 50);
-    stroke(30, 100);
+
+  void display() {
+    fill(30, 50); // color interno particulas. Gris semitransparente
+    stroke(30, 100); // color borde particulas. Menos transparente
+
     int radius = 6;
-    ellipse(x-radius/2, y-radius/2, radius, radius);
+    // convertir (x, y) a pixeles y dibujar:
+    ellipse(float2pix_x(x)-radius/2, float2pix_y(y)-radius/2, radius, radius);
   }
-    void move(){
-    //actualiza velocidad (fórmula con factores de aprendizaje C1 y C2)
-    //vx = vx + random(0,1)*C1*(mybest_x - x) + random(0,1)*C2*(gbest_x - x);
-    //vy = vy + random(0,1)*C1*(mybest_y - y) + random(0,1)*C2*(gbest_y - y);
-    //actualiza velocidad (fórmula con inercia, p.250)
-    vx = w * vx + random(0,1)*(mybest_x - x) + random(0,1)*(gbest_x - x);
-    vy = w * vy + random(0,1)*(mybest_y - y) + random(0,1)*(gbest_y - y);
-    //actualiza velocidad (fórmula mezclada)  
-    //vx = w * vx + random(0,1)*C1*(mybest_x - x) + random(0,1)*C2*(gbest_x - x);
-    //vy = w * vy + random(0,1)*C1*(mybest_y - y) + random(0,1)*C2*(gbest_y - y);
-    // trunca velocidad a maxv
-    float modu = sqrt(vx*vx + vy*vy);
-    if (modu > maxv){
-      vx = vx/modu*maxv;
-      vy = vy/modu*maxv;
+
+  void move() {
+    float rho1 = random(0, 0.01);
+    float rho2 = random(0, 0.01);
+
+    //actualizar velocidad, formula con inercia (p. 250)
+    vx = w * vx + rho1 * (mybest_x - x) + rho2 * (gbest_x - x);
+    vy = w * vy + rho1 * (mybest_y - y) + rho2 * (gbest_y - y);
+
+    //limitar velocidad a maxv
+    float module = sqrt(vx*vx + vy*vy);
+    if (module > maxv) {
+      vx = (vx/module) * maxv;
+      vy = (vy/module) * maxv;
     }
-    // update position
+
+    // actualizar posicion
     x = x + vx;
     y = y + vy;
-    // rebota en murallas
-    if (x > width || x < 0) vx = - vx;
-    if (y > height || y < 0) vy = - vy;
+
+    // rebotar en murallas
+    if (x > 5.12) {
+      vx = -vx;
+      x = width; // evita posibilidad de quedar atrapado rebotando infinitamente
+    }
+    if (x < -5.12) {
+      vx = -vx;
+      x = 0; // ídem
+    }
+    if (y > 5.12) {
+      vy = -vy;
+      y = height; // ídem
+    }
+    if (y < -5.12) {
+      vy = -vy;
+      y = 0;  // ídem
+    }
   }
 }
-// ------------------------------
-// funcion Rastrigin
-float rastrigin(float x, float y){
+
+
+// Funciones mandatorias
+void setup() {
+  size(1024, 1024);
+  particles = new Particle[n_particulas];
+  for (int i = 0; i < n_particulas; i++) {
+    particles[i] = new Particle();
+  }
+}
+void draw() {
+  background(255);
+  line(0, 512, 1024, 512);
+  line(512, 0, 512, 1024);
+
+  for (int i = 0; i < n_particulas; i++) {
+    particles[i].eval();
+    particles[i].move();
+  }
+
+  for (int i = 0; i < n_particulas; i++) {
+    particles[i].display();
+  }
+
+  display_best();
+}
+
+
+// Funcion objetivo
+float rastrigin(float x, float y) {
   int n = 2; // dimensiones
   float sum = 0;
-  // sumatoria
-  //for (int i=1; i<=n; i++){ 
-  // sum += x*x - 10*cos(2*PI*x); // sumando dos veces la componente x, no suma y
-  //}
   sum += x*x - 10*cos(2*PI*x);
   sum += y*y - 10*cos(2*PI*y);
   float result = 10*n + sum;
   return result;
 }
 
-float detransform_x(float x){
-  return (x+5.12)*100;
+// Funciones de utilidad
+
+void display_best() {
 }
 
-float detransform_y(float y){
-  return -1*(y-5.12)*100;
+// convertir de espacio solucion a pixel correspondiente
+int float2pix_x(float x) {
+  return floor((x + 5.12) * 100);
+}
+int float2pix_y(float y) {
+  return floor((-y + 5.12) * 100);
 }
 
-float transform_x(float x){
-  return (x/100)-5.12;
+// de pixel a punto en espacio solucion
+float pix2float_x(int pixel) {
+  return -5.12 + ((float) pixel/100.0);
 }
-
-float transform_y(float y){
-  return -1*((y/100)-5.12);
-}
-
-void despliegaBest(){
-  fill(#0000ff);
-  ellipse(gbest_x,gbest_y,15,15);
-  PFont f = createFont("Arial",16,true);
-  textFont(f,15);
-  fill(#00ff00);
-  text("Best fitness: "+str(gbest)+"\nEvals to best: "+str(evals_to_best)+"\nEvals: "+str(evals),10,20);
-}
-void setup(){
-  size(1024, 1024);
-  particles = new Particle[n_particulas];
-  for (int i = 0; i < n_particulas; i++){
-    particles[i] = new Particle();
-  }
-  print(rastrigin(5.12,5.12)); // para comprobar si funciona bien la funcion
-}
-
-void draw(){
-  background(255);
-  line(0,512,1024,512);
-  line(512,0,512,1024);
-  for (int i = 0; i < n_particulas; i++){
-    particles[i].display();
-  }
-  despliegaBest();
-  for(int i = 0;i<n_particulas;i++){
-    particles[i].Eval();
-    particles[i].move();
-  }
-  
+float pix2float_y(int pixel) {
+  return 5.12 - ((float) pixel/100.0);
 }
