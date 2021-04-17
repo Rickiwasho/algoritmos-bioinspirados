@@ -176,14 +176,16 @@ void draw_convergence(){
   line(gf_left, gf_down, gf_left, 0); // linea ordenada
   
   strokeWeight(2);
+  stroke(40, 80, 190);
   
   line(
-       (float)gf_left + (iter-1)*10,
+       (float)gf_left + (iter-1)*7,
        (float)gf_down - prev*200,
-       (float)gf_left + iter*10,
+       (float)gf_left + iter*7,
        (float)gf_down - gbest*200); 
        
   strokeWeight(1);
+  stroke(0);
   
   prev = gbest;
 }
