@@ -9,7 +9,7 @@ float w = 0.9; // inercia
 // float C1 = 0.3, C2 = 0.3; // factores de aprendizaje. C1: propio; C2: social
 float maxv = 0.08; // max velocidad
 
-boolean display_convergence = false ; //true: mostrar grafico de convergencia, false: mostrar puntos
+boolean display_convergence = true ; //true: mostrar grafico de convergencia, false: mostrar puntos
 
 // Clase Particle
 class Particle {
@@ -123,9 +123,9 @@ void draw() {
     }
 
     display_best();
-
-    iter++;
   }
+
+  iter++;
 }
 
 
@@ -173,15 +173,15 @@ void draw_convergence(){
   int radius = 4; //radio del punto.
   
   line(gf_left, gf_down, width, gf_down); // linea abcisa
-  line(gf_left, gf_down, gf_left, 0); //linea ordenada
+  line(gf_left, gf_down, gf_left, 0); // linea ordenada
   
   strokeWeight(2);
   
   line(
-       (float)gf_left + (iter-1),
-       (float)gf_down - prev*100,
-       (float)gf_left + iter,
-       (float)gf_down - gbest*100); 
+       (float)gf_left + (iter-1)*10,
+       (float)gf_down - prev*200,
+       (float)gf_left + iter*10,
+       (float)gf_down - gbest*200); 
        
   strokeWeight(1);
   
