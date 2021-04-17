@@ -1,8 +1,8 @@
 // Variables globales
 int n_particulas = 100; // número de partículas
 Particle[] particles; // arreglo de partículas
-int evals = 0; // número de evaluaciones
-int evals_to_best = 0; // evaluaciones necesitadas para encontrar el optimo
+int iter = 0; // número de iteraciones
+int iter_to_best = 0; // iteraciones necesitadas para encontrar el optimo
 float gbest_x, gbest_y; // mejor poscicion global
 float gbest = 1000; // mejor fitness global
 float w = 0.9; // inercia
@@ -32,7 +32,6 @@ class Particle {
   }
 
   void eval() {
-    evals++;
     fit = rastrigin(x, y);
     if (fit < mybest) { //actualiza el mejor alcanzado por particula
       mybest = fit;
@@ -43,7 +42,7 @@ class Particle {
       gbest = fit;
       gbest_x = x;
       gbest_y = y;
-      evals_to_best = evals;
+      iter_to_best = iter;
       print("Bet fit:", gbest, "\n");
     }
   }
@@ -124,6 +123,8 @@ void draw() {
     }
 
     display_best();
+
+    iter++;
   }
 }
 
@@ -141,13 +142,13 @@ float rastrigin(float x, float y) {
 // Funciones de utilidad
 
 void display_best() {
-  fill(40, 100, 200, 100);
+  fill(40, 100, 200, 20);
   ellipse(gbest_x-4, gbest_y-4, 8, 8);
 
   PFont f = createFont("Ubuntu", 16, true);
   textFont(f,18);
   fill(30, 30, 30, 220);
-  text("Best fitness: "+str(gbest)+"\nEvals to best: "+str(evals_to_best)+"\nEvals: "+str(evals),10,20);
+  text("Best fitness: "+str(gbest)+"\nIter to best: "+str(iter_to_best)+"\nIter: "+str(iter),10,20);
 }
 
 // convertir de espacio solucion a pixel correspondiente
@@ -177,9 +178,9 @@ void draw_convergence(){
   strokeWeight(2);
   
   line(
-       (float)gf_left + (evals-100)/100,
+       (float)gf_left + (iter-1),
        (float)gf_down - prev*100,
-       (float)gf_left + evals/100,
+       (float)gf_left + iter,
        (float)gf_down - gbest*100); 
        
   strokeWeight(1);
