@@ -99,25 +99,26 @@ float rastrigin(float x, float y) {
   float result = 10*n + sum;
   return result;
 }
-
-// Funciones de utilidad
+// Funciones de cruzamiento
 
 Individual cruzar_A(Individual padre, Individual madre){
   Individual hijo = new Individual();
-  hijo.x = (0.802 * padre.x + 0.208 * madre.x);
-  hijo.y = (0.208 * madre.y + 0.802 * padre.y);
+  hijo.x = random(1) > 0.5 ?  madre.x : padre.x;
+  hijo.y = random(1) > 0.5 ?  madre.y: padre.y;
 
   return hijo;
 }
 
 Individual cruzar_B(Individual padre, Individual madre){
   Individual hijo = new Individual();
-  hijo.x = padre.x;
-  hijo.y = madre.y;
+  hijo.x = madre.x;
+  hijo.y =  padre.y;
 
   return hijo;
 }
 
+
+// Funciones de utilidad
 void display_best() {
 }
 
