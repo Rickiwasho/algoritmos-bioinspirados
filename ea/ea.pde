@@ -17,6 +17,15 @@ class Individual{
       x = random(-5.12, 5.12);
       y = random(-5.12, 5.12);
     }
+
+    void display() {
+      fill(30, 50); // color interno individuos. Gris semitransparente
+      stroke(30, 100); // color borde individuos. Menos transparente
+
+      int radius = 6;
+      // convertir (x, y) a pixeles y dibujar:
+      ellipse(float2pix_x(x)-radius/2, float2pix_y(y)-radius/2, radius, radius);
+  }
 }
 
 // Funciones mandatorias
@@ -26,25 +35,31 @@ void setup(){
     individuals = new Individual[individuals_per_gen];
     newgen = new Individual[individuals_per_gen];
 
-    for (int i = 0; i < n_particulas; i++) {
+    best_ever = new Individual();
+    best_ever.fit = 1000;
+
+    for (int i = 0; i < individuals_per_gen; i++) {
       individuals[i] = new Individual();
     }
 }
 
 void draw(){
+  background(255);
+  line(0, height/2, width, height/2 );
+
   for (int i = 0; i < individuals_per_gen ; i++){
-    Individual[i].fit = rastrigin(Individual[i].x, Individual[i].y);
+    individuals[i].fit = rastrigin(individuals[i].x, individuals[i].y);
   }
 
   // Arreglo que guardará seleccionados aleatoriamente para cada torneo
-  Individual[] selected_random  = new Individual[selected_per_tournament]; // se actualiza cada torneo
+  Individual[] selected  = new Individual[selected_per_tournament]; // se actualiza cada torneo
 
   Individual[] winners = new Individual[tournaments_per_gen];
 
   for (int i = 0; i < tournaments_per_gen; i++ ){ //crea tournaments_per_gen torneos
     int best_in_tournament = -1; //indice del mejor del torneo
     for (int j = 0; j < selected_per_tournament; j++){ // Crea un torneo con selected_per_tournament individuos
-      selected[j] = individuals[random(individuals_per_gen)];
+      selected[j] = individuals[floor(random(individuals_per_gen))];
 
       if (selected[j].fit > best_in_tournament){
         best_in_tournament = j;
@@ -53,11 +68,26 @@ void draw(){
     winners[i] = individuals[best_in_tournament];
   } // fin torneo
 
+  for (int i = 0; i < individuals_per_gen/2 ; i++){
+    newgen[i] = cruzar_A(winners[i], winners[individuals_per_gen/2 + i]);
+    newgen[(individuals_per_gen/2) + i] = cruzar_B(winners[i], winners[individuals_per_gen/2+ i]);
+  }
 
+  for (int i = 0; i < individuals_per_gen; i++ ){
+    boolean mutax = random(2.0) > 1 ? true : false;
+    newgen[i].x = newgen[i].x * random(0.95, 1.05); //totalmente uniforme ;)
+    boolean mutay = random(2.0) > 1 ? true : false;
+    newgen[i].y = newgen[i].y * random(0.95, 1.05);
+  }
 
-
-    
-    
+  for (int i = 0; i < individuals_per_gen; i++){
+    if (newgen[i].fit < best_ever.fit){
+      best_ever = newgen[i];
+      print(best_ever.fit);
+    }
+    newgen[i].display();
+  }
+  
 }
 
 // Funcion objetivo
