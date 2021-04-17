@@ -104,16 +104,16 @@ float rastrigin(float x, float y) {
 
 Individual cruzar_A(Individual padre, Individual madre){
   Individual hijo = new Individual();
-  hijo.x = padre.x;
-  hijo.y = madre.y;
+  hijo.x = (0.802 * padre.x + 0.208 * madre.x);
+  hijo.y = (0.208 * madre.y + 0.802 * padre.y);
 
   return hijo;
 }
 
 Individual cruzar_B(Individual padre, Individual madre){
   Individual hijo = new Individual();
-  hijo.x = madre.x;
-  hijo.y = padre.y;
+  hijo.x = padre.x;
+  hijo.y = madre.y;
 
   return hijo;
 }
