@@ -9,7 +9,9 @@ float w = 0.9; // inercia
 // float C1 = 0.3, C2 = 0.3; // factores de aprendizaje. C1: propio; C2: social
 float maxv = 0.08; // max velocidad
 
-boolean display_convergence = true ; //true: mostrar grafico de convergencia, false: mostrar puntos
+int limit_iter = 500; //limite maximo de iteraciones
+
+boolean display_convergence = false ; //true: mostrar grafico de convergencia, false: mostrar puntos
 
 // Clase Particle
 class Particle {
@@ -108,7 +110,7 @@ void draw() {
   if (display_convergence){ //mostrar convergencia
     draw_convergence();
   }
-  else { // mostrar puntos
+  else{ // mostrar puntos
     background(255);
     line(0, 512, 1024, 512);
     line(512, 0, 512, 1024);
@@ -126,6 +128,9 @@ void draw() {
   }
 
   iter++;
+  if (iter > limit_iter){
+    exit();
+  }
 }
 
 
