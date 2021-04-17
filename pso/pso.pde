@@ -1,5 +1,5 @@
 // Variables globales
-int n_particulas = 100; // número de partículas
+int n_particulas = 1000; // número de partículas
 Particle[] particles; // arreglo de partículas
 int iter = 0; // número de iteraciones
 int iter_to_best = 0; // iteraciones necesitadas para encontrar el optimo
